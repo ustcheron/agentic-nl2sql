@@ -17,8 +17,10 @@ for item in data:
             answers.append(cleaned_think_and_sql)
         answer = '\n'.join(answers)
         postprocessed_data.append({
+            'db_id': item['db_id'],
             'prompt': prompt,
-            'answer': answer
+            'answer': answer,
+            'gold_sql': item['gold_sql']
         })
 
 random.shuffle(postprocessed_data)

@@ -5,7 +5,7 @@
 
 set -e -x
 
-export MODEL_PATH=/home/koujianshang/models/agent-7b-0511
+export MODEL_PATH=/home/koujianshang/models/Qwen2.5-Coder-7B-Instruct
 export REWARD_MODEL_PATH=/home/koujianshang/models/dummy
 export RESULT_DIR=/home/koujianshang/workspace/agentic-rl/res
 
@@ -14,8 +14,8 @@ python3 -m verl.trainer.main_ppo --config-name=rl_factory_ppo_trainer \
     data.train_files=data/nq_search/train.parquet\
     data.val_files=data/nq_search/test.parquet\
     data.train_batch_size=128\
-    data.max_prompt_length=4096\
-    data.max_response_length=512\
+    data.max_prompt_length=8192\
+    data.max_response_length=1024\
     actor_rollout_ref.model.path=$MODEL_PATH\
     actor_rollout_ref.model.use_remove_padding=True\
     actor_rollout_ref.model.enable_gradient_checkpointing=True\
@@ -53,14 +53,14 @@ python3 -m verl.trainer.main_ppo --config-name=rl_factory_ppo_trainer \
     reward_model.reward_manager=parallel\
     algorithm.kl_ctrl.kl_coef=0.001\
     trainer.critic_warmup=0\
-    trainer.logger=['tensorboard']\
-    trainer.project_name='GRPO_search'\
-    trainer.experiment_name='search_with_thinking'\
-    trainer.n_gpus_per_node=8\
+    trainer.logger=['swanlab', 'console']\
+    trainer.project_name='GRPO_nl2sql'\
+    trainer.experiment_name='nl2sql_with_thinking'\
+    trainer.n_gpus_per_node=4\
     trainer.nnodes=1\
     trainer.val_before_train=False\
     trainer.default_local_dir=$RESULT_DIR\
     trainer.default_hdfs_dir=null\
-    trainer.save_freq=20\
+    trainer.save_freq=200\
     trainer.test_freq=10\
-    trainer.total_epochs=5 $@ 2>&1 | tee grpo.log
+    trainer.total_epochs=1 $@ 2>&1 | tee grpo.log

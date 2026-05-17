@@ -2,6 +2,7 @@ from .base import Env as BaseEnv
 from .mmbase import MMEnv
 from .search import SearchEnv
 from .vision import VisionEnv
+from .nl2sql import NL2SQLEnv
 from .reward_rollout_example import RewardRolloutEnv
 
 # Define public interface for the module

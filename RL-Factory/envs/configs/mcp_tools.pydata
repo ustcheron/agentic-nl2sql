@@ -2,7 +2,7 @@
     {'mcpServers': {
         'search': {
             'command': 'python3',
-            'args': ['envs/tools/exec_sql.py']
+            'args': ['envs/tools/sql.py']
         }
     }}
 ]

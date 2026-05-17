@@ -22,6 +22,21 @@ def save_json(data, file_path):
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
+def save_jsonl(data, file_path, append=False):
+    """
+    保存JSONL文件（每行一个独立JSON对象）
+    
+    Args:
+        data: 可迭代对象，每个元素都是可序列化的JSON对象
+        file_path: 保存的文件路径
+        append: 是否以追加模式写入（默认False，覆盖原有文件）
+    """
+    mode = 'a' if append else 'w'
+    with open(file_path, mode, encoding='utf-8') as f:
+        for item in data:
+            json.dump(item, f, ensure_ascii=False)
+            f.write('\n')
+
 def sync_exec_sql(sql: str, db_id: str):
     """同步调用本地 Flask 服务进行 SQL 执行"""
     payload = {
