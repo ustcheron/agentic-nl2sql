@@ -51,7 +51,7 @@ def get_final_sql(text):
         return matches[-1].strip()
     return None
 
-N_ATTEMPTS = 10
+N_ATTEMPTS = 5
 
 # 核心异步处理函数
 async def process_problem(idx, prob, sem, file_lock, pbar):
