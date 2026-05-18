@@ -13,7 +13,7 @@
 
 SFT我用的也是RL-Factory，环境的配置请参考原始仓库 https://github.com/Simple-Efficient/RL-Factory，verl的环境配置其实是比较麻烦的，但是这个仓库给的配置脚本很好，没有bug，这一点非常好
 
-SFT的运行脚本在./RL-Factory/run_agent_sft.sh，根据情况修改路径和其他配置信息。相比普通的SFT,主要修改就是添加了AgentSFTDataset类（见./RL-Factory/verl/utils/dataset/sft_dataset.py），遮盖sql_exec_result标签和其中的内容
+SFT的运行脚本在./RL-Factory/agent_sft.sh，根据情况修改路径和其他配置信息。相比普通的SFT,主要修改就是添加了AgentSFTDataset类（见./RL-Factory/verl/utils/dataset/sft_dataset.py），遮盖sql_exec_result标签和其中的内容
 
 用verl做SFT的一个缺点就是得到的checkpoint不是huggingface格式，要手动转换，在RL-Factory目录下运行以下命令：
 ```bash
@@ -25,3 +25,9 @@ CUDA_VISIBLE_DEVICES=0 python scripts/model_merger.py merge --backend fsdp --loc
 ## 评估SFT模型的Agent能力
 
 评估其实和轨迹收集的代码是一样的，将上一步的模型用vllm部署在本地，然后运行 async_eval.py 即可
+
+## 运行Agentic RL
+
+RL我用的是RL-Factory，启动脚本在./RL-Factory/run_grpo.sh。RL的初始模型理论上应该是SFT的checkpoint，如果暂时没有完成SFT，可以用Qwen2.5-Coder-7B-Instruct，也可以运行
+
+这个脚本的运行需要4 * A800 80G，如果暂时没有这个资源可以先学习一下RL-Factory框架的代码设计
