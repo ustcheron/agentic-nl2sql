@@ -15,21 +15,21 @@ tokenizer = transformers.AutoTokenizer.from_pretrained(tokenizer_id)
 # 2. 异步 vLLM 客户端设置
 client = AsyncOpenAI(
     api_key="EMPTY",
-    base_url="http://localhost:10080/v1",
+    base_url="http://localhost:10091/v1",
 )
 model_name = "qwen"
 
 # 上下文参数控制
-MAX_CONTEXT_LENGTH = 32768
-MAX_NEW_TOKENS = 2048
+MAX_CONTEXT_LENGTH = 8192
+MAX_NEW_TOKENS = 1024
 
 curr_search_template = '\n{output_text}\n<sql_exec_result>\n{search_results}\n</sql_exec_result>\n'
 
 prompt_template = """You are a SQL expert. Given the [Question], [DB Schema], and [Hints], you are tasked to transform the [Question] into an executable SQLite query. \
-You must conduct reasoning inside <think> and </think> first, and put the transformed SQL into <sql> and </sql>. \
+You must conduct reasoning inside <reason> and </reason> first, and put the transformed SQL into <sql> and </sql>. \
 You can get the execution feedback of your SQL between <sql_exec_result> and </sql_exec_result>. \
 If there are any grammar error or the execution result is empty, you need to re-conduct reasoning, and rewrite the refined SQL between <sql> and </sql>. \
-If the SQL query exeuctes successfully with concrete results, you can briefly summarize your solution between <think> and </think>, and provide the final SQL between <final_sql> and </final_sql>.
+If the SQL query exeuctes successfully with concrete results, you can briefly summarize your solution between <reason> and </reason>, and provide the final SQL between <final_sql> and </final_sql>.
 Question: {question}
 DB Schema: {db_schema}
 Hints: {hints}
@@ -51,7 +51,7 @@ def get_final_sql(text):
         return matches[-1].strip()
     return None
 
-N_ATTEMPTS = 5
+N_ATTEMPTS = 10
 
 # 核心异步处理函数
 async def process_problem(idx, prob, sem, file_lock, pbar):
@@ -90,13 +90,16 @@ async def process_problem(idx, prob, sem, file_lock, pbar):
                         prompt=prompt,
                         max_tokens=MAX_NEW_TOKENS,
                         temperature=1.0,
-                        stop=["</sql>"]
+                        stop=["</sql>"],
+                        extra_body={"chat_template_kwargs":{"enable_thinking":False}}
                     )
                 except Exception as e:
                     print(f"\n[Error] vLLM API Error on Problem {idx}: {e}")
                     break
 
                 output_text = response.choices[0].text
+                reason_start = output_text.find('<reason>')
+                output_text = output_text[reason_start:]
                 finish_reason = response.choices[0].finish_reason
 
                 is_final = False
@@ -138,7 +141,7 @@ async def process_problem(idx, prob, sem, file_lock, pbar):
             async with file_lock:
                 # 注意：这里使用内置的 open，在加锁的保护下且写入量不大时是安全的。
                 # 如果追求极致性能，可考虑安装使用 aiofiles 库。
-                with open('./collected/trajectory.jsonl', 'a') as f:
+                with open('./trajectories/qwen36-27b.jsonl', 'a') as f:
                     f.write(json.dumps(meta_info, ensure_ascii=False) + '\n')
         
         # 完成一个任务，更新进度条

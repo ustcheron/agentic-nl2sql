@@ -5,7 +5,7 @@
 1. 下载BIRD数据集，解压到 bird 目录下，训练集和验证集的schemas.json我已经解析好了，所以这里只需要 train.json 和 dev.json
 2. BIRD数据库也解压到适当位置（我的放在了~/bird_db，数据库很大，不需要用git管理），然后 cd 到 bird 目录，启动 sql_server服务，用于在数据库中执行SQL、评估正确性（启动命令在sql_server.py第一行，需要安装gunicorn，flask等依赖）
 3. 下载Qwen2.5-Coder-32B-Instruct并部署（推荐使用vllm），我是部署在本地的10080端口，通过openai格式的python sdk来使用
-4. 运行 collect_trajectory.py，采集到的轨迹会保存在 ./collected/trajectory.jsonl
+4. 运行 collect_trajectory.py，采集到的轨迹会保存在 ./trajectories/trajectory.jsonl
 5. 运行 postprecess_collected_data.py，将轨迹转化为一问一答的格式，包括train.json和val.json，可用来做SFT
 
 
