@@ -10,7 +10,7 @@ import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-project_root = os.path.abspath(os.path.join(current_dir, "../../.."))
+project_root = os.path.abspath(os.path.join(current_dir, "../.."))
 
 
 if project_root not in sys.path:
@@ -58,7 +58,7 @@ class NL2SQLEnv(Env):
             
             if do_print:
                 print(f"--------------------------------")
-                print(f"Golden answers: {ground_truth['target']}")
+                print(f"Golden answers: {ground_truth}")
                 print(f"Extracted answer: {answer}")
                 print(f"Solution string: {solution_str}")
             
@@ -135,7 +135,7 @@ class NL2SQLEnv(Env):
             ground_truth, db_id, response_str = processed_data['ground_truth'], processed_data['db_id'], processed_data['response_str']
             
             # reserved for compatibility
-            prompt_str, data_source, extra_info = processed_data['prompt_str'], processed_data['data_source'], processed_data['extra_info']
+            prompt_str, extra_info = processed_data['prompt_str'], processed_data['extra_info']
 
             score = compute_score_em(response_str, ground_truth, db_id, format_score=format_score)
             scores.append([score])

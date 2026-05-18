@@ -84,7 +84,7 @@ class Env(ABC):
         # 添加db_id字段
         db_id = data_item.non_tensor_batch['reward_model']['db_id']
         ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']
-        data_source = data_item.non_tensor_batch['data_source']
+        # data_source = data_item.non_tensor_batch['data_source']
         extra_info = data_item.non_tensor_batch.get('extra_info', None)
         
         return {
@@ -92,7 +92,7 @@ class Env(ABC):
             'response_str': response_str,
             'db_id': db_id,
             'ground_truth': ground_truth,
-            'data_source': data_source,
+             # 'data_source': data_source,
             'extra_info': extra_info
         }
     

@@ -1,6 +1,6 @@
 [
     {'mcpServers': {
-        'search': {
+        'sql': {
             'command': 'python3',
             'args': ['envs/tools/sql.py']
         }
